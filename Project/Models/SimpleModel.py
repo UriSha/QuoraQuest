@@ -34,8 +34,7 @@ class SimpleModel(nn.Module):
          (a pair of questions is the i'th tensor and (i+1)'th tensor for every even i)
         @:return Tensor of concatenated pairs of questions
         """
-        return torch.stack([torch.cat((X[i], X[i + 1]),0) for i in range(0, len(X), 2)])
-
+        return torch.stack([torch.cat((X[i], X[i + 1]), 0) for i in range(0, len(X), 2)])
 
     def idx_vecs(self, sentence, model):
         """
