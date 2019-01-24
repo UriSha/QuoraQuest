@@ -2,8 +2,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-import Attn
-import MasterClassifier
+from Models.Attn import Attn
+from Models.MasterClassifier import MasterClassifier
 
 
 class AttnModel(nn.Module):
