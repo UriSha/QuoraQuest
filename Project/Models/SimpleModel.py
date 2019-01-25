@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
 import numpy as np
-from MasterClassifier import MasterClassifier
+from Models.MasterClassifier import MasterClassifier
 from torch.autograd import Variable
 
 
