@@ -4,7 +4,6 @@ import re
 class DataInit():
     def __init__(self, file_path):
         data_frame = self.load_data(file_path)
-        print(data_frame.dtypes)
 
         data_frame = self.clean_data(data_frame)
 
@@ -23,13 +22,14 @@ class DataInit():
         return res
 
     def clean_data(self, data):
-        data['question1']= data['question1'].astype(str)
-        data['question2']= data['question2'].astype(str)
-        data['question1'] = data.apply(lambda row: self.normalize_string(row['question1']), axis=1)
-        data['question2'] = data.apply(lambda row: self.normalize_string(row['question2']), axis=1)
+        data['question1'] = data['question1'].apply(lambda row: self.normalize_string(row))
+        data['question2'] = data['question1'].apply(lambda row: self.normalize_string(row))
+        return data
 
     def normalize_string(self, s):
-        s = s.lower().strip()
+        if not isinstance(s, str):
+            s = "NA"
+        s = str(s).lower().strip()
         s = re.sub(r"([.!?])", r" \1", s)
         s = re.sub(r"[^a-zA-Z.!?]+", r" ", s)
         return s
