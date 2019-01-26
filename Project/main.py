@@ -1,10 +1,10 @@
+import torch
+import torch.nn as nn
 from DataInit import DataInit
 from WordVecs import WordVecs
 from Models.SimpleModel import SimpleModel
 from Trainer import Trainer
 from Plotter import Plotter
-import torch
-import torch.nn as nn
 
 
 def main():
@@ -33,8 +33,8 @@ def main():
 
     train_losses, test_losses = trainer.train(train_X, train_y, test_X, test_y)
 
-    train_plotter = Plotter(train_losses, test_losses)
-    train_plotter.plot()
+    plotter = Plotter(train_losses, test_losses)
+    plotter.plot()
 
 
 if __name__ == '__main__':
