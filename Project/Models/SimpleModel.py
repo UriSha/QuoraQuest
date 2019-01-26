@@ -6,7 +6,7 @@ from torch.autograd import Variable
 
 
 class SimpleModel(nn.Module):
-    def __init__(self, src_vecs):
+    def __init__(self, src_vecs, cuda):
         super(SimpleModel, self).__init__()
 
         self.semb = nn.Embedding(src_vecs.vocab_length, src_vecs.vector_size)
@@ -14,11 +14,15 @@ class SimpleModel(nn.Module):
         self.sw2idx = src_vecs._w2idx
         self.sidx2w = src_vecs._idx2w
         self.emb_size = src_vecs.vector_size
+        self.cuda = cuda
 
         # Do not update original embedding spaces
         self.semb.weight.requires_grad = False
 
         self.cls = MasterClassifier.MasterClassifier(src_vecs.vector_size * 2)
+
+        if self.cuda:
+            self.cls.cuda()
 
     def forward(self, X):
 
@@ -49,6 +53,10 @@ class SimpleModel(nn.Module):
                 sent.append(model[w])
             except KeyError:
                 sent.append(0)
+
+        if self.cuda:
+            return torch.cuda.LongTensor(np.array(sent))
+
         return torch.LongTensor(np.array(sent))
 
     def lookup(self, X, model):

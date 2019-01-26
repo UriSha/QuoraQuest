@@ -16,6 +16,7 @@ def main():
     epochs = 100
     learning_rate = 0.001
     train_ratio = 0.1
+    cuda = True
 
     data_init = DataInit(data_file_path)
 
@@ -23,13 +24,13 @@ def main():
 
     src_vecs = WordVecs(emmbedings_file_path)
 
-    model = SimpleModel(src_vecs)
+    model = SimpleModel(src_vecs, cuda)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
     criterion = nn.MSELoss()
 
-    trainer = Trainer(model, optimizer, criterion, epochs, batch_size)
+    trainer = Trainer(model, optimizer, criterion, epochs, batch_size, cuda)
 
     train_losses, test_losses = trainer.train(train_X, train_y, test_X, test_y)
 

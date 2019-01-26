@@ -3,17 +3,21 @@ import torch
 
 
 class Trainer():
-    def __init__(self, model, optimizer, criterion, epochs, batch_size):
+    def __init__(self, model, optimizer, criterion, epochs, batch_size, to_cuda):
         self.model = model
         self.optimizer = optimizer
         self.criterion = criterion
         self.epochs = epochs
         self.batch_size = batch_size
+        self.to_cuda = to_cuda
 
     def train(self, train_X, train_y, test_X, test_y):
 
         train_losses = []
         test_losses = []
+
+        if self.to_cuda:
+            self.model.cuda()
 
         for e in range(self.epochs):
             # train_X, train_y = self.shuffle_data(train_X, train_y)
@@ -51,7 +55,12 @@ class Trainer():
 
             outputs = self.model(batch_X)
             outputs = outputs.unsqueeze()
-            batch_y = torch.Tensor(batch_y)
+
+            if self.to_cuda:
+                batch_y = torch.Tensor(batch_y).cuda()
+            else:
+                batch_y = torch.Tensor(batch_y)
+
             loss = self.criterion(outputs, batch_y)
 
             if is_train:
