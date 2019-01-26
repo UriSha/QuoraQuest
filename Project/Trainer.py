@@ -22,10 +22,10 @@ class Trainer():
         for e in range(self.epochs):
             # train_X, train_y = self.shuffle_data(train_X, train_y)
 
-            train_loss = self.forward_batch(train_X, train_y, is_train=True)
-            test_loss = self.forward_batch(test_X, test_y, is_train=False)
+            train_loss, train_acc = self.forward_batch(train_X, train_y, is_train=True)
+            test_loss, test_acc = self.forward_batch(test_X, test_y, is_train=False)
 
-            print("epoch: {} | train loss: {} | test_loss: {}".format(e + 1, train_loss, test_loss))
+            print("epoch: {} | train_loss: {} | train_acc: {} | test_loss: {} | test_acc: {}".format(e + 1, train_loss, train_acc, test_loss, test_acc))
 
             train_losses.append(train_loss)
             test_losses.append(test_loss)
@@ -40,6 +40,7 @@ class Trainer():
 
         num_batches = int(len(y) / self.batch_size)
         epoch_loss = 0.0
+        accuracy = 0.0
         x_idx = 0
         y_idx = 0
 
@@ -67,10 +68,14 @@ class Trainer():
                 self.optimizer.step()
 
             epoch_loss += loss
+            for i in range(len(outputs)):
+                if abs(outputs[i] - batch_y[i]) < 0.5:
+                    accuracy += 1
 
         # calculate loss for epoch
         epoch_loss /= (num_batches * self.batch_size)
-        return epoch_loss
+        accuracy /= (num_batches * self.batch_size)
+        return epoch_loss, accuracy
 
     # def shuffle_data(self, X, y, seed=4):
     #     c = list(zip(X, y))
