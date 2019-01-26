@@ -1,5 +1,6 @@
 import pandas as pd
 import re
+from sklearn.model_selection import train_test_split
 
 class DataInit():
     def __init__(self, file_path):
@@ -36,3 +37,12 @@ class DataInit():
 
     def get_data_and_labels(self):
         return self.data, self.labels
+
+    def get_train_test_data(self, test_ratio):
+        return train_test_split(self.data, self.labels, test_size=test_ratio, random_state=1)
+
+
+
+
+
+

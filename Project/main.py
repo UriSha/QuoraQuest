@@ -14,10 +14,11 @@ def main():
     batch_size = 16
     epochs = 100
     learning_rate = 0.001
+    train_ratio = 0.1
 
     data_init = DataInit(data_file_path)
 
-    train_X, train_y, test_X, test_y = data_init.get_data()
+    train_X, test_X, train_y, test_y = data_init.get_train_test_data(train_ratio)
 
     src_vecs = WordVecs(emmbedings_file_path)
 
