@@ -30,7 +30,11 @@ class SimpleModel(nn.Module):
 
         X = self.concat_pairs(X)
 
-        return self.cls(X)
+        X = self.cls(X)
+
+        X = X.squeeze(dim=1)
+
+        return X
 
     def concat_pairs(self, X):
         """

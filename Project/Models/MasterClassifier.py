@@ -1,5 +1,6 @@
 import torch.nn as nn
 import torch.nn.functional as F
+import torch
 
 
 class MasterClassifier(nn.Module):
@@ -15,4 +16,4 @@ class MasterClassifier(nn.Module):
         X = F.relu(self.fc1(X))
         X = F.relu(self.fc2(X))
         X = self.fc3(X)
-        return F.sigmoid(X)
+        return torch.sigmoid(X)
