@@ -41,7 +41,7 @@ class SimpleModel(nn.Module):
         Converts a tokenized sentence to a vector
         of word indices based on the model.
         """
-        if not sentence:
+        if len(sentence) == 0:
             sentence = ["NA"]
         sent = []
         for w in sentence:
