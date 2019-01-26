@@ -1,4 +1,5 @@
 import random
+import torch
 
 
 class Trainer():
@@ -49,6 +50,8 @@ class Trainer():
                 self.optimizer.zero_grad()
 
             outputs = self.model(batch_X)
+            outputs = outputs.unsqueeze()
+            batch_y = torch.Tensor(batch_y)
             loss = self.criterion(outputs, batch_y)
 
             if is_train:

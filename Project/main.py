@@ -27,7 +27,7 @@ def main():
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.MSELoss()
 
     trainer = Trainer(model, optimizer, criterion, epochs, batch_size)
 
