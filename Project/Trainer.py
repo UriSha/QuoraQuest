@@ -33,15 +33,17 @@ class Trainer():
         else:
             self.model.eval()
 
-        num_batches = int(len(X) / self.batch_size)
+        num_batches = int(len(y) / self.batch_size)
         epoch_loss = 0.0
-        idx = 0
+        x_idx = 0
+        y_idx = 0
 
         for j in range(num_batches):
 
-            batch_X = X[idx:idx + self.batch_size * 2]
-            batch_y = y[idx:idx + self.batch_size]
-            idx += self.batch_size
+            batch_X = X[x_idx:x_idx + self.batch_size * 2]
+            batch_y = y[y_idx:y_idx + self.batch_size]
+            x_idx += self.batch_size * 2
+            y_idx += self.batch_size
 
             if is_train:
                 self.optimizer.zero_grad()
