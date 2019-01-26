@@ -54,7 +54,7 @@ class Trainer():
                 self.optimizer.zero_grad()
 
             outputs = self.model(batch_X)
-            outputs = outputs.unsqueeze()
+            outputs = outputs.squeeze(dim=1)
 
             if self.to_cuda:
                 batch_y = torch.Tensor(batch_y).cuda()

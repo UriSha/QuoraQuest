@@ -14,14 +14,14 @@ class SimpleModel(nn.Module):
         self.sw2idx = src_vecs._w2idx
         self.sidx2w = src_vecs._idx2w
         self.emb_size = src_vecs.vector_size
-        self.cuda = cuda
+        self.to_cuda = cuda
 
         # Do not update original embedding spaces
         self.semb.weight.requires_grad = False
 
         self.cls = MasterClassifier.MasterClassifier(src_vecs.vector_size * 2)
 
-        if self.cuda:
+        if self.to_cuda:
             self.cls.cuda()
 
     def forward(self, X):
