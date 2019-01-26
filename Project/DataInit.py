@@ -2,6 +2,7 @@ import pandas as pd
 import re
 from sklearn.model_selection import train_test_split
 
+
 class DataInit():
     def __init__(self, file_path):
         data_frame = self.load_data(file_path)
