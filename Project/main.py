@@ -33,11 +33,8 @@ def main():
 
     train_losses, test_losses = trainer.train(train_X, train_y, test_X, test_y)
 
-    train_plotter = Plotter(train_losses)
+    train_plotter = Plotter(train_losses, test_losses)
     train_plotter.plot()
-
-    test_plotter = Plotter(test_losses)
-    test_plotter.plot()
 
 
 if __name__ == '__main__':
