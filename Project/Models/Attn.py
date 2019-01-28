@@ -16,20 +16,19 @@ class Attn(nn.Module):
 
     # self.weight_vec = nn.Parameter(torch.FloatTensor(1, hidden_size*2))
 
-    def forward(self, outputs, text_lens):
+    def forward(self, questions, questions_lens):
 
-        seq_len = len(outputs)
+        questions_lens = np.array([l for l in questions_lens])
+        max_question_len = np.max(questions_lens)
 
-        seq_lens = np.array([l for l in text_lens])
-
-        attn_energies = torch.zeros(self.batch_size, seq_lens[0]).cuda()  # B x 1 x S
+        attn_energies = torch.zeros(self.batch_size, max_question_len).cuda()  # Batch_size x 1 x max_question_len
 
         for i in range(self.batch_size):
-            for j in range(seq_lens[i]):
-                attn_energies[i][j] = self.score(outputs[i][j])
+            for j in range(questions_lens[i]):
+                attn_energies[i][j] = self.score(questions[i][j])
 
-        for i in range(seq_lens.shape[0]):
-            for j in range(seq_lens[0] - 1, seq_lens[i] - 1, -1):
+        for i in range(self.batch_size):
+            for j in range(questions_lens[i], max_question_len):
                 attn_energies[i][j] = -10 ** 10
 
         res = F.softmax(attn_energies, dim=1)
@@ -43,7 +42,6 @@ class Attn(nn.Module):
         energy = torch.dot(self.weight_vec.view(-1), energy)
 
         return energy
-
 
     # def forward(self, question):
     #     seq_len = len(question)
