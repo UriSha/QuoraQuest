@@ -1,14 +1,16 @@
 import random
 import torch
+import numpy as np
 
 
 class Trainer():
-    def __init__(self, model, optimizer, criterion, epochs, batch_size, to_cuda):
+    def __init__(self, model, optimizer, criterion, epochs, batch_size, is_attn, to_cuda):
         self.model = model
         self.optimizer = optimizer
         self.criterion = criterion
         self.epochs = epochs
         self.batch_size = batch_size
+        self.is_attn = is_attn
         self.to_cuda = to_cuda
 
     def train(self, train_X, train_y, test_X, test_y):
@@ -54,7 +56,11 @@ class Trainer():
             if is_train:
                 self.optimizer.zero_grad()
 
-            outputs = self.model(batch_X)
+            if self.is_attn:
+                batch_X, lens = self.prepare_batch(batch_X)
+                outputs = self.model(batch_X, lens)
+            else:
+                outputs = self.model(batch_X)
 
             if self.to_cuda:
                 batch_y = torch.Tensor(batch_y).cuda()
@@ -76,6 +82,28 @@ class Trainer():
         epoch_loss /= (num_batches * self.batch_size)
         accuracy /= (num_batches * self.batch_size)
         return epoch_loss, accuracy
+
+    def prepare_batch(self, batch_x):
+        # get the length of each sentence  
+        batch_lengths = [len(sentence) for sentence in batch_x]
+
+        batch_x = [self.model.idx_vecs(sent) for sent in batch_x]
+        # create an empty matrix with padding tokens
+        #   pad_token = vocab['<PAD>']
+        pad_token = 0
+        longest_sent = max(batch_lengths)
+        batch_size = len(batch_x)
+        padded_batch = np.ones((batch_size, longest_sent)) * pad_token
+        # copy over the actual sequences
+        for i, sent_len in enumerate(batch_lengths):
+            sequence = batch_x[i]
+            padded_batch[i, 0:sent_len] = sequence[:sent_len]
+
+        if self.to_cuda:
+            batch = [torch.LongTensor(l) for l in padded_batch]
+        else:
+            batch = [torch.cuda.LongTensor(l) for l in padded_batch]
+        return torch.stack(batch), batch_lengths
 
     # def shuffle_data(self, X, y, seed=4):
     #     c = list(zip(X, y))

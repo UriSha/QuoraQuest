@@ -27,55 +27,17 @@ class AttnModel(nn.Module):
             self.cls.cuda()
             self.attn.cuda()
 
-    def forward(self, X):
+    def forward(self, X, lens):
 
-        #X = Padder(X)
+        weights = self.attn(X, lens)
+        
+        X = torch.dot(X, weights)
 
         X = self.concat_pairs(X)
-
         X = self.cls(X)
-
         X = X.squeeze(dim=1)
 
         return X
-
-
-        first_q = X[:self.question_embed_size]
-        sec_q = X[self.question_embed_size:]
-
-        first_weights = self.attn(first_q)
-        sec_weights = self.attn(sec_q)
-
-        first_q_avg = torch.dot(first_q, first_weights)
-        sec_q_avg = torch.dot(sec_q, sec_weights)
-
-        cls_input = np.concatenate(first_q_avg, sec_q_avg)
-
-        result = self.cls(cls_input)
-
-        return result
-
-    def prepare_batch(self, batch_x):
-        # get the length of each sentence
-        batch_lengths = [len(sentence) for sentence in batch_x]
-
-        batch_x = [self.idx_vecs(sent) for sent in batch_x]
-        # create an empty matrix with padding tokens
-        #   pad_token = vocab['<PAD>']
-        pad_token = 0
-        longest_sent = max(batch_lengths)
-        batch_size = len(batch_x)
-        padded_batch = np.ones((batch_size, longest_sent)) * pad_token
-        # copy over the actual sequences
-        for i, sent_len in enumerate(batch_lengths):
-            sequence = batch_x[i]
-            padded_batch[i, 0:sent_len] = sequence[:sent_len]
-
-        if self.to_cuda:
-            batch = [torch.LongTensor(l) for l in padded_batch]
-        else:
-            batch = [torch.cuda.LongTensor(l) for l in padded_batch]
-        return torch.stack(batch), batch_lengths
 
     def idx_vecs(self, sentence):
         """
@@ -91,7 +53,7 @@ class AttnModel(nn.Module):
             except KeyError:
                 sent.append(0)
 
-        if self.cuda:
+        if self.to_cuda:
             return torch.cuda.LongTensor(np.array(sent))
 
         return torch.LongTensor(np.array(sent))
