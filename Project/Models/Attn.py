@@ -5,7 +5,7 @@ import numpy as np
 
 
 class Attn(nn.Module):
-    def __init__(self, hidden_size):
+    def __init__(self, hidden_size, cuda):
         super(Attn, self).__init__()
 
         self.hidden_size = hidden_size
@@ -13,6 +13,7 @@ class Attn(nn.Module):
         #         self.lin = nn.Linear(self.hidden_size*2, hidden_size*2)
 
         self.weight_vec = nn.Parameter(torch.FloatTensor(1, hidden_size))
+        self.to_cuda = cuda
 
     # self.weight_vec = nn.Parameter(torch.FloatTensor(1, hidden_size*2))
 
@@ -21,7 +22,10 @@ class Attn(nn.Module):
         questions_lens = np.array([l for l in questions_lens])
         max_question_len = np.max(questions_lens)
 
-        attn_energies = torch.zeros(self.batch_size, max_question_len).cuda()  # Batch_size x 1 x max_question_len
+        attn_energies = torch.zeros(self.batch_size, max_question_len)  # Batch_size x 1 x max_question_len
+
+        if self.to_cuda:
+            attn_energies = attn_energies.cuda()
 
         for i in range(self.batch_size):
             for j in range(questions_lens[i]):
