@@ -59,7 +59,7 @@ class AttnModel(nn.Module):
         # get the length of each sentence
         batch_lengths = [len(sentence) for sentence in batch_x]
 
-        batch_x = [self.sent_to_indices(sent) for sent in batch_x]
+        batch_x = [self.idx_vecs(sent) for sent in batch_x]
         # create an empty matrix with padding tokens
         #   pad_token = vocab['<PAD>']
         pad_token = 0
@@ -77,8 +77,24 @@ class AttnModel(nn.Module):
             batch = [torch.cuda.LongTensor(l) for l in padded_batch]
         return torch.stack(batch), batch_lengths
 
-    def sent_to_indices(self, sentence):
-        return [self.w2idx(word) for word in sentence]
+    def idx_vecs(self, sentence):
+        """
+        Converts a tokenized sentence to a vector
+        of word indices based on the model.
+        """
+        if len(sentence) == 0:
+            sentence = ["NA"]
+        sent = []
+        for w in sentence:
+            try:
+                sent.append(self.w2idx[w])
+            except KeyError:
+                sent.append(0)
+
+        if self.cuda:
+            return torch.cuda.LongTensor(np.array(sent))
+
+        return torch.LongTensor(np.array(sent))
 
     def concat_pairs(self, X):
         """
