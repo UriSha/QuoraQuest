@@ -31,7 +31,11 @@ class AttnModel(nn.Module):
 
         weights = self.attn(X, lens)
         
-        X = torch.dot(X, weights)
+        #X = torch.dot(X, weights)
+        weights = weights.unsqueeze(2)
+        weights = weights.expand(weights.shape[0],weights.shape[1],self.emb_size)
+        weigthed_outputs = torch.mul(X, weights)
+        X = torch.sum(weigthed_outputs, -2)
 
         X = self.concat_pairs(X)
         X = self.cls(X)
