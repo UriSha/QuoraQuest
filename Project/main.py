@@ -5,7 +5,7 @@ from WordVecs import WordVecs
 from Models.SimpleModel import SimpleModel
 from Models.AttnModel import AttnModel
 from Trainer import Trainer
-#from Plotter import Plotter
+# from Plotter import Plotter
 import argparse
 
 
@@ -47,7 +47,7 @@ def main():
     else:
         print("Init attention Model")
         is_attn = True
-        model = AttnModel(src_vecs, cuda)
+        model = AttnModel(src_vecs, batch_size, cuda)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     criterion = nn.MSELoss()
@@ -58,8 +58,8 @@ def main():
     print("Start training")
     train_losses, test_losses = trainer.train(train_X, train_y, test_X, test_y)
 
-    #plotter = Plotter(train_losses, test_losses)
-    #plotter.plot()
+    # plotter = Plotter(train_losses, test_losses)
+    # plotter.plot()
 
 
 if __name__ == '__main__':

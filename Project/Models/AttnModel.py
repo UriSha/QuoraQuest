@@ -1,13 +1,14 @@
 import numpy as np
 import torch
 import torch.nn as nn
+from torch.autograd import Variable
 
 from Models.Attn import Attn
 from Models.MasterClassifier import MasterClassifier
 
 
 class AttnModel(nn.Module):
-    def __init__(self, src_vecs, cuda):
+    def __init__(self, src_vecs, batch_size, cuda):
         super(AttnModel, self).__init__()
 
         self.semb = nn.Embedding(src_vecs.vocab_length, src_vecs.vector_size)
@@ -20,7 +21,7 @@ class AttnModel(nn.Module):
         # Do not update original embedding spaces
         self.semb.weight.requires_grad = False
 
-        self.attn = Attn(self.emb_size, self.to_cuda)
+        self.attn = Attn(self.emb_size, batch_size, cuda)
         self.cls = MasterClassifier(self.emb_size * 2)
 
         if self.to_cuda:
@@ -29,11 +30,24 @@ class AttnModel(nn.Module):
 
     def forward(self, X, lens):
 
+        if self.to_cuda:
+            X = [self.semb(Variable(sent).cuda()) for sent in X]
+        else:
+            X = [self.semb(Variable(sent)) for sent in X]
+
         weights = self.attn(X, lens)
-        
-        #X = torch.dot(X, weights)
+
+        X = torch.stack(X)
+        #         print("X: ", X)
+        #         print("X.shape: ", X.shape)
+
+        #         print("weights: ", weights)
+        #         print("weights.shape: ", weights.shape)
+
+
+        # X = torch.dot(X, weights)
         weights = weights.unsqueeze(2)
-        weights = weights.expand(weights.shape[0],weights.shape[1],self.emb_size)
+        weights = weights.expand(weights.shape[0], weights.shape[1], self.emb_size)
         weigthed_outputs = torch.mul(X, weights)
         X = torch.sum(weigthed_outputs, -2)
 
