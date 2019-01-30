@@ -3,6 +3,7 @@ import torch.nn as nn
 from DataInit import DataInit
 from WordVecs import WordVecs
 from Models.SimpleModel import SimpleModel
+from Models.AttnModel import AttnModel
 from Trainer import Trainer
 #from Plotter import Plotter
 import argparse
@@ -11,11 +12,14 @@ import argparse
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-ep', '--emdpath',
-                        help="where to dump weights during training (default: ./models)",
+                        help="where the embeddings file is located",
                         default='Data/fasttext.vec')
     parser.add_argument('-dp', '--datapath',
-                        help="where to dump weights during training (default: ./models)",
+                        help="where the data file is located",
                         default='Data/train.csv')
+    parser.add_argument('-model', '--model',
+                        help="which model to use",
+                        default='simple')
     args = parser.parse_args()
 
     # Consts
@@ -36,15 +40,20 @@ def main():
     print("Importing embeddings")
     src_vecs = WordVecs(emmbedings_file_path)
 
-    print("Init Model")
-    model = SimpleModel(src_vecs, cuda)
+    if args.model == 'simple':
+        print("Init simple Model")
+        is_attn = False
+        model = SimpleModel(src_vecs, cuda)
+    else:
+        print("Init attention Model")
+        is_attn = True
+        model = AttnModel(src_vecs, cuda)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-
     criterion = nn.MSELoss()
 
     print("Init Trainer")
-    trainer = Trainer(model, optimizer, criterion, epochs, batch_size, cuda)
+    trainer = Trainer(model, optimizer, criterion, epochs, batch_size, is_attn, cuda)
 
     print("Start training")
     train_losses, test_losses = trainer.train(train_X, train_y, test_X, test_y)
