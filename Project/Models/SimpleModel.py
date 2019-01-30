@@ -19,7 +19,7 @@ class SimpleModel(nn.Module):
         # Do not update original embedding spaces
         self.semb.weight.requires_grad = False
 
-        self.cls = MasterClassifier.MasterClassifier(src_vecs.vector_size * 2)
+        self.cls = MasterClassifier(src_vecs.vector_size * 2)
 
         if self.to_cuda:
             self.cls.cuda()

@@ -4,7 +4,7 @@ from DataInit import DataInit
 from WordVecs import WordVecs
 from Models.SimpleModel import SimpleModel
 from Trainer import Trainer
-from Plotter import Plotter
+#from Plotter import Plotter
 import argparse
 
 
@@ -15,10 +15,11 @@ def main():
                         default='Data/fasttext.vec')
     parser.add_argument('-dp', '--datapath',
                         help="where to dump weights during training (default: ./models)",
-                        default='Data/train.csx.csv')
+                        default='Data/train.csv')
     args = parser.parse_args()
 
     # Consts
+    print("Init Consts")
     data_file_path = args.datapath
     emmbedings_file_path = args.emdpath
     batch_size = 256
@@ -27,24 +28,29 @@ def main():
     train_ratio = 0.1
     cuda = True
 
+    print("Start DataInit")
     data_init = DataInit(data_file_path)
 
     train_X, test_X, train_y, test_y = data_init.get_train_test_data(train_ratio)
 
+    print("Importing embeddings")
     src_vecs = WordVecs(emmbedings_file_path)
 
+    print("Init Model")
     model = SimpleModel(src_vecs, cuda)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
     criterion = nn.MSELoss()
 
+    print("Init Trainer")
     trainer = Trainer(model, optimizer, criterion, epochs, batch_size, cuda)
 
+    print("Start training")
     train_losses, test_losses = trainer.train(train_X, train_y, test_X, test_y)
 
-    plotter = Plotter(train_losses, test_losses)
-    plotter.plot()
+    #plotter = Plotter(train_losses, test_losses)
+    #plotter.plot()
 
 
 if __name__ == '__main__':
