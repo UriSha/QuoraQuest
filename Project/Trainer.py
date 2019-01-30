@@ -79,7 +79,7 @@ class Trainer():
                 loss.backward()
                 self.optimizer.step()
 
-            epoch_loss += loss
+            epoch_loss += loss.data[0]
             for i in range(len(outputs)):
                 if abs(outputs[i] - batch_y[i]) < 0.5:
                     accuracy += 1
