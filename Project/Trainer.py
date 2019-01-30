@@ -27,7 +27,10 @@ class Trainer():
             train_loss, train_acc = self.forward_batch(train_X, train_y, is_train=True)
             test_loss, test_acc = self.forward_batch(test_X, test_y, is_train=False)
 
-            print("epoch: {} | train_loss: {} | train_acc: {} | test_loss: {} | test_acc: {}".format(e + 1, train_loss, train_acc, test_loss, test_acc))
+            print("epoch: {} | train_loss: {} | train_acc: {} | test_loss: {} | test_acc: {}".format(e + 1, train_loss,
+                                                                                                     train_acc,
+                                                                                                     test_loss,
+                                                                                                     test_acc))
 
             train_losses.append(train_loss)
             test_losses.append(test_loss)
@@ -48,8 +51,8 @@ class Trainer():
 
         for j in range(num_batches):
 
-            if j % 10 == 0:
-                print("start batch num: ", j)
+            if j % 20 == 0:
+                print("start batch num {} out of {}".format(j, num_batches))
 
             batch_X = X[x_idx:x_idx + self.batch_size * 2]
             batch_y = y[y_idx:y_idx + self.batch_size]
@@ -108,8 +111,8 @@ class Trainer():
             batch = [torch.cuda.LongTensor(l) for l in padded_batch]
         return torch.stack(batch), batch_lengths
 
-    # def shuffle_data(self, X, y, seed=4):
-    #     c = list(zip(X, y))
-    #     random.Random(seed).shuffle(c)
-    #     X, y = zip(*c)
-    #     return X, y
+        # def shuffle_data(self, X, y, seed=4):
+        #     c = list(zip(X, y))
+        #     random.Random(seed).shuffle(c)
+        #     X, y = zip(*c)
+        #     return X, y

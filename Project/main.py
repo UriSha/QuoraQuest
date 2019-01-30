@@ -26,9 +26,9 @@ def main():
     print("Init Consts")
     data_file_path = args.datapath
     emmbedings_file_path = args.emdpath
-    batch_size = 256
-    epochs = 200
-    learning_rate = 0.001
+    batch_size = 64
+    epochs = 100
+    learning_rate = 0.01
     train_ratio = 0.1
     cuda = True
 
@@ -55,7 +55,9 @@ def main():
     print("Init Trainer")
     trainer = Trainer(model, optimizer, criterion, epochs, batch_size, is_attn, cuda)
 
-    print("Start training")
+    print("Start training with parameters:")
+    print("batch_size: {} | epochs: {} | learning_rate: {} | train_ratio: {}".format(batch_size, epochs, learning_rate,
+                                                                                     train_ratio))
     train_losses, test_losses = trainer.train(train_X, train_y, test_X, test_y)
 
     # plotter = Plotter(train_losses, test_losses)
