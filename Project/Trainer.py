@@ -48,6 +48,9 @@ class Trainer():
 
         for j in range(num_batches):
 
+            if j % 10 == 0:
+                print("start batch num: ", j)
+
             batch_X = X[x_idx:x_idx + self.batch_size * 2]
             batch_y = y[y_idx:y_idx + self.batch_size]
             x_idx += self.batch_size * 2
