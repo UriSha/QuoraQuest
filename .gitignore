@@ -110,3 +110,4 @@ settings.json
 
 # large files
 Project/Data/google.txt
+Project/Data/fasttext.vec
