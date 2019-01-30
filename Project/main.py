@@ -5,15 +5,24 @@ from WordVecs import WordVecs
 from Models.SimpleModel import SimpleModel
 from Trainer import Trainer
 from Plotter import Plotter
+import argparse
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-ep', '--emdpath',
+                        help="where to dump weights during training (default: ./models)",
+                        default='Data/fasttext.vec')
+    parser.add_argument('-dp', '--datapath',
+                        help="where to dump weights during training (default: ./models)",
+                        default='Data/train.csx.csv')
+    args = parser.parse_args()
 
     # Consts
-    data_file_path = ""
-    emmbedings_file_path = ""
-    batch_size = 16
-    epochs = 100
+    data_file_path = args.datapath
+    emmbedings_file_path = args.emdpath
+    batch_size = 256
+    epochs = 200
     learning_rate = 0.001
     train_ratio = 0.1
     cuda = True
