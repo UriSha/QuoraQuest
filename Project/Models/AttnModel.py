@@ -20,7 +20,7 @@ class AttnModel(nn.Module):
         # Do not update original embedding spaces
         self.semb.weight.requires_grad = False
 
-        self.attn = Attn(self.emb_size)
+        self.attn = Attn(self.emb_size, self.to_cuda)
         self.cls = MasterClassifier(self.emb_size * 2)
 
         if self.to_cuda:
