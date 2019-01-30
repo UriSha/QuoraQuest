@@ -27,7 +27,7 @@ def main():
     data_file_path = args.datapath
     emmbedings_file_path = args.emdpath
     batch_size = 64
-    epochs = 100
+    epochs = 200
     learning_rate = 0.01
     train_ratio = 0.1
     cuda = True
