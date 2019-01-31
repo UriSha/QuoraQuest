@@ -36,7 +36,7 @@ class Trainer():
                                                                                                      test_acc))
 
             file.write(
-                "epoch: {} | train_loss: {} | train_acc: {} | test_loss: {} | test_acc: {}".format(e + 1, train_loss,
+                "epoch: {} | train_loss: {} | train_acc: {} | test_loss: {} | test_acc: {}\n".format(e + 1, train_loss,
                                                                                                    train_acc,
                                                                                                    test_loss,
                                                                                                    test_acc))
