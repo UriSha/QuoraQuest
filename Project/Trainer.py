@@ -17,6 +17,7 @@ class Trainer():
 
         train_losses = []
         test_losses = []
+        file = open("output.txt", "w+")
 
         if self.to_cuda:
             self.model.cuda()
@@ -32,8 +33,15 @@ class Trainer():
                                                                                                      test_loss,
                                                                                                      test_acc))
 
+            file.write(
+                "epoch: {} | train_loss: {} | train_acc: {} | test_loss: {} | test_acc: {}".format(e + 1, train_loss,
+                                                                                                   train_acc,
+                                                                                                   test_loss,
+                                                                                                   test_acc))
             train_losses.append(train_loss)
             test_losses.append(test_loss)
+
+        file.close()
 
         return train_losses, test_losses
 
