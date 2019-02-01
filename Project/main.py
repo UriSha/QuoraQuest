@@ -30,7 +30,7 @@ def main():
     epochs = 250
     learning_rate = 0.0001
     train_ratio = 0.1
-    cuda = True
+    cuda = False
 
     print("Start DataInit")
     data_init = DataInit(data_file_path)
