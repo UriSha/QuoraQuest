@@ -38,7 +38,7 @@ class Attn(nn.Module):
 
         for i in range(self.batch_size * 2):
             for j in range(questions_lens[i], max_question_len):
-                attn_energies[i][j] = -10 ** 10
+                attn_energies[i][j] = float('-inf')
 
         # print("attn_energies before softmax: ", attn_energies)
         res = F.softmax(attn_energies, dim=1)
