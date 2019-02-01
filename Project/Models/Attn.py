@@ -12,7 +12,7 @@ class Attn(nn.Module):
         self.lin = nn.Linear(self.embeddings_size, embeddings_size)
         #         self.lin = nn.Linear(self.hidden_size*2, hidden_size*2)
 
-        self.weight_vec = nn.Parameter(torch.FloatTensor(1, embeddings_size))
+        self.weight_vec = nn.Parameter(torch.FloatTensor(embeddings_size, 1))
         torch.nn.init.xavier_normal_(self.weight_vec)
         #         self.weight_vec.data[torch.isnan(self.weight_vec)] = 0
         # print()
@@ -86,8 +86,7 @@ class Attn(nn.Module):
         print("energy.shape: ", word_embed.shape)
         print("self.weight_vec.shape: ", self.weight_vec.shape)
 
-
-        energy = torch.dot(self.weight_vec.view(-1), energy)
+        energy = torch.matmul(energy, self.weight_vec)
 
         print()
         print("after dot:")
