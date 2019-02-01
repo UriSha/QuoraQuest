@@ -32,8 +32,7 @@ class Attn(nn.Module):
         if output_log:
             start1 = time.time()
 
-        questions_lens = np.array([l for l in questions_lens])
-        max_question_len = np.max(questions_lens)
+        max_question_len = max(questions_lens)
 
         questions = questions.view(-1, self.embeddings_size)
 
@@ -81,9 +80,10 @@ class Attn(nn.Module):
         if output_log:
             start1 = time.time()
 
-        for i in range(self.batch_size * 2):
-            for j in range(questions_lens[i], max_question_len):
-                attn_energies[i][j] = float('-inf')
+        masks = [torch.zeros(max_question_len).scatter_(0, torch.tensor(list(range(qlen, max_question_len))), 1).byte() for qlen in questions_lens]
+        masks = torch.stack(masks)
+        attn_energies.masked_fill_(masks, float('-inf'))
+        
 
         if output_log:
             print("for time: ", str(time.time() - start1))
