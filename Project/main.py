@@ -49,6 +49,7 @@ def main():
         is_attn = True
         model = AttnModel(src_vecs, batch_size, cuda)
 
+    print("Model parametrs ", model)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     criterion = nn.MSELoss()
 
