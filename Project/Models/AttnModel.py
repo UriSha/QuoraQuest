@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import torch.nn as nn
+import time
 from torch.autograd import Variable
 
 from Models.Attn import Attn
@@ -28,14 +29,21 @@ class AttnModel(nn.Module):
             self.cls.cuda()
             self.attn.cuda()
 
-    def forward(self, X, lens):
+    def forward(self, X, lens, output_log=False):
 
         if self.to_cuda:
             X = torch.stack([self.semb(Variable(sent).cuda()) for sent in X])
         else:
             X = torch.stack([self.semb(Variable(sent)) for sent in X])
 
+        if output_log:
+            print("Start forward pass of attention model")
+            start = time.time()
         weights = self.attn(X, lens)
+
+        if output_log:
+            end = time.time()
+            print("Attention model forward pass ended after: ", str(start - end))
         # print()
         # print("in attn model after self.attn()")
         # print("weights.shape", weights.shape)
@@ -49,14 +57,30 @@ class AttnModel(nn.Module):
 
 
         # X = torch.dot(X, weights)
+        if output_log:
+            print("Start weight manipulations")
+            start = time.time()
+
         weights = weights.unsqueeze(2)
         weights = weights.expand(weights.shape[0], weights.shape[1], self.emb_size)
         weigthed_outputs = torch.mul(X, weights)
         X = torch.sum(weigthed_outputs, -2)
 
+        if output_log:
+            end = time.time()
+            print("Weight manipulation ended after: ", str(start - end))
+
+        if output_log:
+            print("Start master classifier")
+            start = time.time()
+
         X = self.concat_pairs(X)
         X = self.cls(X)
         X = X.squeeze(dim=1)
+
+        if output_log:
+            end = time.time()
+            print("Master classifier ended after: ", str(start - end))
 
         return X
 

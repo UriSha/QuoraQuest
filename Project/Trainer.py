@@ -61,8 +61,8 @@ class Trainer():
 
         for j in range(num_batches):
 
-            # if j % 20 == 0:
-            #     print("start batch num {} out of {}".format(j, num_batches))
+            if j % 20 == 0:
+                print("start batch num {} out of {}".format(j, num_batches))
 
             batch_X = X[x_idx:x_idx + self.batch_size * 2]
             batch_y = y[y_idx:y_idx + self.batch_size]
@@ -74,7 +74,7 @@ class Trainer():
 
             if self.is_attn:
                 batch_X, lens = self.prepare_batch(batch_X)
-                outputs = self.model(batch_X, lens)
+                outputs = self.model(batch_X, lens, j % 20 == 0)
             else:
                 outputs = self.model(batch_X)
 
