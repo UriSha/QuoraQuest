@@ -99,7 +99,7 @@ class Trainer():
 
             if j % 20 == 0:
                 end1 = time.time()
-                print("Batch ended after: ", str(end - start))
+                print("Batch ended after: ", str(end1 - start1))
 
         # calculate loss for epoch
         epoch_loss /= (num_batches * self.batch_size)
