@@ -43,7 +43,7 @@ class AttnModel(nn.Module):
 
         if output_log:
             end = time.time()
-            print("Attention model forward pass ended after: ", str(start - end))
+            print("Attention model forward pass ended after: ", str(end - start))
         # print()
         # print("in attn model after self.attn()")
         # print("weights.shape", weights.shape)
@@ -68,7 +68,7 @@ class AttnModel(nn.Module):
 
         if output_log:
             end = time.time()
-            print("Weight manipulation ended after: ", str(start - end))
+            print("Weight manipulation ended after: ", str(end - start))
 
         if output_log:
             print("Start master classifier")
@@ -80,7 +80,7 @@ class AttnModel(nn.Module):
 
         if output_log:
             end = time.time()
-            print("Master classifier ended after: ", str(start - end))
+            print("Master classifier ended after: ", str(end - start))
 
         return X
 

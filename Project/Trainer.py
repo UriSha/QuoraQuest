@@ -1,5 +1,6 @@
 import random
 import torch
+import time
 import numpy as np
 
 
@@ -62,6 +63,8 @@ class Trainer():
         for j in range(num_batches):
 
             if j % 20 == 0:
+                print()
+                start1 = time.time()
                 print("start batch num {} out of {}".format(j, num_batches))
 
             batch_X = X[x_idx:x_idx + self.batch_size * 2]
@@ -93,6 +96,10 @@ class Trainer():
             for i in range(len(outputs)):
                 if abs(outputs[i] - batch_y[i]) < 0.5:
                     accuracy += 1
+
+            if j % 20 == 0:
+                end1 = time.time()
+                print("Batch ended after: ", str(end - start))
 
         # calculate loss for epoch
         epoch_loss /= (num_batches * self.batch_size)
