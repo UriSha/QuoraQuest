@@ -76,7 +76,14 @@ class Trainer():
                 self.optimizer.zero_grad()
 
             if self.is_attn:
+                if j % 20 == 0:
+                    print()
+                    print("prepare batch before")
+                    start1 = time.time()
                 batch_X, lens = self.prepare_batch(batch_X)
+                if j % 20 == 0:
+                    end1 = time.time()
+                    print("prepare batch after: ", str(end1 - start1))
                 outputs = self.model(batch_X, lens, j % 20 == 0)
             else:
                 outputs = self.model(batch_X)

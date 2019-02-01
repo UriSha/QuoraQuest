@@ -31,10 +31,18 @@ class AttnModel(nn.Module):
 
     def forward(self, X, lens, output_log=False):
 
+        if output_log:
+            print("torch stack")
+            start = time.time()
+
         if self.to_cuda:
             X = torch.stack([self.semb(Variable(sent).cuda()) for sent in X])
         else:
             X = torch.stack([self.semb(Variable(sent)) for sent in X])
+
+        if output_log:
+            end = time.time()
+            print("torch stack ended: ", str(end - start))
 
         if output_log:
             print("Start forward pass of attention model")
