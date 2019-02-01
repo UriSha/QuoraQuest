@@ -79,11 +79,11 @@ class Trainer():
                 if j % 20 == 0:
                     print()
                     print("prepare batch before")
-                    start1 = time.time()
+                    start2 = time.time()
                 batch_X, lens = self.prepare_batch(batch_X)
                 if j % 20 == 0:
-                    end1 = time.time()
-                    print("prepare batch after: ", str(end1 - start1))
+                    end2 = time.time()
+                    print("prepare batch after: ", str(end2 - start2))
                 outputs = self.model(batch_X, lens, j % 20 == 0)
             else:
                 outputs = self.model(batch_X)
@@ -93,11 +93,22 @@ class Trainer():
             else:
                 batch_y = torch.Tensor(batch_y)
 
+            if j % 20 == 0:
+                start3 = time.time()
             loss = self.criterion(outputs, batch_y)
 
+            if j % 20 == 0:
+                end1 = time.time()
+                print("Criterion ended after: ", str(end1 - start3))
+
             if is_train:
+                if j % 20 == 0:
+                    start3 = time.time()
                 loss.backward()
                 self.optimizer.step()
+                if j % 20 == 0:
+                    end1 = time.time()
+                    print("loss ended after: ", str(end1 - start3))
 
             epoch_loss += loss.item()
             for i in range(len(outputs)):
