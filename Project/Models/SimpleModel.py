@@ -58,7 +58,7 @@ class SimpleModel(nn.Module):
             except KeyError:
                 sent.append(0)
 
-        if self.cuda:
+        if self.to_cuda:
             return torch.cuda.LongTensor(np.array(sent))
 
         return torch.LongTensor(np.array(sent))
