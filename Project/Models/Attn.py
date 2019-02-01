@@ -29,10 +29,16 @@ class Attn(nn.Module):
         # print("attn.forward:")
         # print("questions.shape: ", questions.shape)
 
+        if output_log:
+            start1 = time.time()
+
         questions_lens = np.array([l for l in questions_lens])
         max_question_len = np.max(questions_lens)
 
         questions = questions.view(-1, self.embeddings_size)
+
+        if output_log:
+            print("data prep time: ", str(time.time() - start1))
 
         # print()
         # print("after questions.view:")
@@ -40,7 +46,14 @@ class Attn(nn.Module):
         # attn_energies = torch.zeros(self.batch_size * 2, max_question_len)  # Batch_size x 1 x max_question_len
         # attn_energies = torch.zeros(questions.shape[0], self.embeddings_size)  # self.batch_size * 2 * max_question_len x self.embeddings_size
 
+
+        if output_log:
+            start1 = time.time()
+
         attn_energies = self.score(questions)
+
+        if output_log:
+            print("data prep time: ", str(time.time() - start1))
 
         # print()
         # print("after self.score(questions):")
@@ -49,7 +62,13 @@ class Attn(nn.Module):
         if self.to_cuda:
             attn_energies = attn_energies.cuda()
 
+        if output_log:
+            start1 = time.time()
+
         attn_energies = attn_energies.view(self.batch_size * 2, max_question_len)
+
+        if output_log:
+            print("energy view time: ", str(time.time() - start1))
 
         # print()
         # print("after attn_energies.view:")
@@ -59,12 +78,24 @@ class Attn(nn.Module):
         #     for j in range(questions_lens[i]):
         #         attn_energies[i][j] = self.score(questions[i][j])
 
+        if output_log:
+            start1 = time.time()
+
         for i in range(self.batch_size * 2):
             for j in range(questions_lens[i], max_question_len):
                 attn_energies[i][j] = float('-inf')
 
+        if output_log:
+            print("for time: ", str(time.time() - start1))
+
+        if output_log:
+            start1 = time.time()
+
         # print("attn_energies before softmax: ", attn_energies)
         res = F.softmax(attn_energies, dim=1)
+
+        if output_log:
+            print("softmax time: ", str(time.time() - start1))
 
         # print()
         # print("after softmax:")
