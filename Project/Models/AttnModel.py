@@ -31,9 +31,9 @@ class AttnModel(nn.Module):
     def forward(self, X, lens):
 
         if self.to_cuda:
-            X = [self.semb(Variable(sent).cuda()) for sent in X]
+            X = torch.stack([self.semb(Variable(sent).cuda()) for sent in X])
         else:
-            X = [self.semb(Variable(sent)) for sent in X]
+            X = torch.stack([self.semb(Variable(sent)) for sent in X])
 
         weights = self.attn(X, lens)
 

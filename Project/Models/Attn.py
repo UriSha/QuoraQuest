@@ -27,14 +27,20 @@ class Attn(nn.Module):
         questions_lens = np.array([l for l in questions_lens])
         max_question_len = np.max(questions_lens)
 
-        attn_energies = torch.zeros(self.batch_size * 2, max_question_len)  # Batch_size x 1 x max_question_len
+        questions = questions.view(-1, self.embeddings_size)
+        # attn_energies = torch.zeros(self.batch_size * 2, max_question_len)  # Batch_size x 1 x max_question_len
+        # attn_energies = torch.zeros(questions.shape[0], self.embeddings_size)  # self.batch_size * 2 * max_question_len x self.embeddings_size
+
+        attn_energies = self.score(questions)
 
         if self.to_cuda:
             attn_energies = attn_energies.cuda()
 
-        for i in range(self.batch_size * 2):
-            for j in range(questions_lens[i]):
-                attn_energies[i][j] = self.score(questions[i][j])
+        attn_energies = attn_energies.view(self.batch_size * 2, max_question_len)
+        #
+        # for i in range(self.batch_size * 2):
+        #     for j in range(questions_lens[i]):
+        #         attn_energies[i][j] = self.score(questions[i][j])
 
         for i in range(self.batch_size * 2):
             for j in range(questions_lens[i], max_question_len):

@@ -116,9 +116,10 @@ class Trainer():
             padded_batch[i, 0:sent_len] = sequence[:sent_len]
 
         if self.to_cuda:
-            batch = [torch.LongTensor(l) for l in padded_batch]
-        else:
             batch = [torch.cuda.LongTensor(l) for l in padded_batch]
+        else:
+            batch = [torch.LongTensor(l) for l in padded_batch]
+
         return torch.stack(batch), batch_lengths
 
         # def shuffle_data(self, X, y, seed=4):
