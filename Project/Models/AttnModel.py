@@ -47,7 +47,7 @@ class AttnModel(nn.Module):
         if output_log:
             print("Start forward pass of attention model")
             start = time.time()
-        weights = self.attn(X, lens)
+        weights = self.attn(X, lens, output_log)
 
         if output_log:
             end = time.time()

@@ -51,7 +51,7 @@ def main():
 
     print("Model parametrs ", model)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-    criterion = nn.MSELoss()
+    criterion = nn.BCELoss()
 
     print("Init Trainer")
     trainer = Trainer(model, optimizer, criterion, epochs, batch_size, is_attn, cuda)

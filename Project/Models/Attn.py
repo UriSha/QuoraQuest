@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+import time
 
 
 class Attn(nn.Module):
@@ -22,7 +23,7 @@ class Attn(nn.Module):
 
     # self.weight_vec = nn.Parameter(torch.FloatTensor(1, hidden_size*2))
 
-    def forward(self, questions, questions_lens):
+    def forward(self, questions, questions_lens, output_log=False):
 
         # print()
         # print("attn.forward:")
