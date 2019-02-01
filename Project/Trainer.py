@@ -18,7 +18,7 @@ class Trainer():
         train_losses = []
         test_losses = []
         file = open(
-            "Results/output - epochs_num: {} | batch_size: {} | is_attn: {} .txt".format(self.epochs, self.batch_size,
+            "Results/output-epochs_{}-batch_size_{}-is_attn_{}.txt".format(self.epochs, self.batch_size,
                                                                                          self.is_attn, ), "w+")
 
         if self.to_cuda:
