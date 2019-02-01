@@ -36,8 +36,11 @@ class AttnModel(nn.Module):
             X = torch.stack([self.semb(Variable(sent)) for sent in X])
 
         weights = self.attn(X, lens)
-
-        X = torch.stack(X)
+        print()
+        print("in attn model after self.attn()")
+        print("weights.shape", weights.shape)
+        print("X.shape", X.shape)
+        # X = torch.stack(X)
         #         print("X: ", X)
         #         print("X.shape: ", X.shape)
 
