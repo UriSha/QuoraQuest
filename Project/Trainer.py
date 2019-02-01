@@ -62,7 +62,7 @@ class Trainer():
 
         for j in range(num_batches):
 
-            if j % 20 == 0:
+            if j % 2000 == 0:
                 print()
                 start1 = time.time()
                 print("start batch num {} out of {}".format(j, num_batches))
@@ -76,15 +76,15 @@ class Trainer():
                 self.optimizer.zero_grad()
 
             if self.is_attn:
-                if j % 20 == 0:
+                if j % 2000 == 0:
                     print()
                     print("prepare batch before")
                     start2 = time.time()
                 batch_X, lens = self.prepare_batch(batch_X)
-                if j % 20 == 0:
+                if j % 2000 == 0:
                     end2 = time.time()
                     print("prepare batch after: ", str(end2 - start2))
-                outputs = self.model(batch_X, lens, j % 20 == 0)
+                outputs = self.model(batch_X, lens, j % 2000 == 0)
             else:
                 outputs = self.model(batch_X)
 
@@ -93,29 +93,33 @@ class Trainer():
             else:
                 batch_y = torch.Tensor(batch_y)
 
-            if j % 20 == 0:
+            if j % 2000 == 0:
                 start3 = time.time()
             loss = self.criterion(outputs, batch_y)
 
-            if j % 20 == 0:
+            if j % 2000 == 0:
                 end1 = time.time()
                 print("Criterion ended after: ", str(end1 - start3))
 
             if is_train:
-                if j % 20 == 0:
+                if j % 2000 == 0:
                     start3 = time.time()
                 loss.backward()
                 self.optimizer.step()
-                if j % 20 == 0:
+                if j % 2000 == 0:
                     end1 = time.time()
                     print("loss ended after: ", str(end1 - start3))
 
             epoch_loss += loss.item()
             for i in range(len(outputs)):
-                if abs(outputs[i] - batch_y[i]) < 0.5:
-                    accuracy += 1
+                if outputs[i] > 0:
+                    if batch_y[i] == 1:
+                        accuracy += 1
+                else:
+                    if batch_y[i] == 0:
+                        accuracy += 1
 
-            if j % 20 == 0:
+            if j % 2000 == 0:
                 end1 = time.time()
                 print("Batch ended after: ", str(end1 - start1))
 
@@ -138,7 +142,7 @@ class Trainer():
         # copy over the actual sequences
         for i, sent_len in enumerate(batch_lengths):
             sequence = batch_x[i]
-            padded_batch[i, 0:sent_len] = sequence[:sent_len]
+            padded_batch[i, 0:sent_len] = sequence.cpu()[:sent_len]
 
         if self.to_cuda:
             batch = [torch.cuda.LongTensor(l) for l in padded_batch]
