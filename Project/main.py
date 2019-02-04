@@ -21,24 +21,36 @@ def main():
                         help="which model to use",
                         default='simple')
     parser.add_argument('-lr', '--lr',
-                        help="which model to use",
-                        default='0.001')
+                        help="learning rate to use",
+                        default=0.001)
+    parser.add_argument('-batch_size', '--batch_size',
+                        help="size of batch",
+                        default=128)
+    parser.add_argument('-epochs', '--epochs',
+                        help="number of epochs",
+                        default=250)
+    parser.add_argument('-test_ratio', '--test_ratio',
+                        help="test/train ratio",
+                        default=0.1)
+    parser.add_argument('-cuda', '--cuda',
+                        help="use cuda",
+                        default=True)
     args = parser.parse_args()
 
     # Consts
     print("Init Consts")
     data_file_path = args.datapath
     emmbedings_file_path = args.emdpath
-    batch_size = 128
-    epochs = 250
+    batch_size = args.batch_size
+    epochs = args.epochs
     learning_rate = args.lr
-    train_ratio = 0.1
-    cuda = True
+    test_ratio = args.test_ratio
+    cuda = args.cuda
 
     print("Start DataInit")
     data_init = DataInit(data_file_path)
 
-    train_X, test_X, train_y, test_y = data_init.get_train_test_data(train_ratio)
+    train_X, test_X, train_y, test_y = data_init.get_train_test_data(test_ratio)
 
     print("Importing embeddings")
     src_vecs = WordVecs(emmbedings_file_path)
@@ -57,7 +69,7 @@ def main():
     criterion = nn.BCEWithLogitsLoss(reduce=True, size_average=False)
 
     print("Init Trainer")
-    trainer = Trainer(model, optimizer, criterion, epochs, batch_size, is_attn, cuda)
+    trainer = Trainer(model, optimizer,learning_rate, criterion, epochs, batch_size, is_attn, cuda)
 
     print("Start training with parameters:")
     print("batch_size: {} | epochs: {} | learning_rate: {} | train_ratio: {}".format(batch_size, epochs, learning_rate,

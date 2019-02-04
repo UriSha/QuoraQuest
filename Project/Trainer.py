@@ -6,9 +6,10 @@ import numpy as np
 
 
 class Trainer():
-    def __init__(self, model, optimizer, criterion, epochs, batch_size, is_attn, to_cuda):
+    def __init__(self, model, optimizer, learning_rate, criterion, epochs, batch_size, is_attn, to_cuda):
         self.model = model
         self.optimizer = optimizer
+        self.learning_rate = learning_rate
         self.criterion = criterion
         self.epochs = epochs
         self.batch_size = batch_size
@@ -20,8 +21,10 @@ class Trainer():
         train_losses = []
         test_losses = []
         file = open(
-            "Results/output-epochs_{}-batch_size_{}-is_attn_{}.txt".format(self.epochs, self.batch_size,
-                                                                                         self.is_attn, ), "w+")
+            "Results/output-epochs_{}-learning_rate_{}-batch_size_{}-is_attn_{}.txt".format(self.epochs,
+                                                                                            self.learning_rate,
+                                                                                            self.batch_size,
+                                                                                            self.is_attn, ), "w+")
 
         if self.to_cuda:
             self.model.cuda()
@@ -39,9 +42,9 @@ class Trainer():
 
             file.write(
                 "epoch: {} | train_loss: {} | train_acc: {} | test_loss: {} | test_acc: {}\n".format(e + 1, train_loss,
-                                                                                                   train_acc,
-                                                                                                   test_loss,
-                                                                                                   test_acc))
+                                                                                                     train_acc,
+                                                                                                     test_loss,
+                                                                                                     test_acc))
             train_losses.append(train_loss)
             test_losses.append(test_loss)
 
