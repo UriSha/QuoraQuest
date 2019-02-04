@@ -22,7 +22,7 @@ def main():
                         default='simple')
     parser.add_argument('-lr', '--lr',
                         help="learning rate to use",
-                        default=0.001, type=float)
+                        default=0.0001, type=float)
     parser.add_argument('-batch_size', '--batch_size',
                         help="size of batch",
                         default=128, type=int)
