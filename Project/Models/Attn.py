@@ -80,7 +80,7 @@ class Attn(nn.Module):
         if output_log:
             start1 = time.time()
 
-        masks = [torch.zeros(max_question_len).scatter_(0, torch.LongTensor(list(range(qlen, max_question_len))), 1).byte() for qlen in questions_lens]
+        masks = [self.masker(qlen, max_question_len) for qlen in questions_lens]
         masks = torch.stack(masks)
         attn_energies.masked_fill_(masks, float('-inf'))
         
@@ -142,3 +142,8 @@ class Attn(nn.Module):
         #     energy = self.lin(word)
         #     energy = torch.dot(self.weight_vec.view(-1), energy.view(-1))
         #     return energy
+
+    def masker(self, qlen, max_question_len):
+        if qlen == max_question_len:
+            return torch.zeros(max_question_len)
+        return torch.zeros(max_question_len).scatter_(0, torch.LongTensor(list(range(qlen, max_question_len))), 1.0).byte()
