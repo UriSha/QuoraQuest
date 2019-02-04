@@ -1,6 +1,7 @@
 import random
 import torch
 import time
+import math
 import numpy as np
 
 
@@ -62,7 +63,7 @@ class Trainer():
 
         for j in range(num_batches):
 
-            if j % 2000 == 0:
+            if False:
                 print()
                 start1 = time.time()
                 print("start batch num {} out of {}".format(j, num_batches))
@@ -76,15 +77,15 @@ class Trainer():
                 self.optimizer.zero_grad()
 
             if self.is_attn:
-                if j % 2000 == 0:
+                if False:
                     print()
                     print("prepare batch before")
                     start2 = time.time()
                 batch_X, lens = self.prepare_batch(batch_X)
-                if j % 2000 == 0:
+                if False:
                     end2 = time.time()
                     print("prepare batch after: ", str(end2 - start2))
-                outputs = self.model(batch_X, lens, j % 2000 == 0)
+                outputs = self.model(batch_X, lens, False)
             else:
                 outputs = self.model(batch_X)
 
@@ -93,24 +94,29 @@ class Trainer():
             else:
                 batch_y = torch.Tensor(batch_y)
 
-            if j % 2000 == 0:
+            if False:
                 start3 = time.time()
             loss = self.criterion(outputs, batch_y)
 
-            if j % 2000 == 0:
+            if False:
                 end1 = time.time()
                 print("Criterion ended after: ", str(end1 - start3))
 
             if is_train:
-                if j % 2000 == 0:
+                if False:
                     start3 = time.time()
                 loss.backward()
                 self.optimizer.step()
-                if j % 2000 == 0:
+                if False:
                     end1 = time.time()
                     print("loss ended after: ", str(end1 - start3))
 
-            epoch_loss += loss.item()
+            cur_loss = loss.item()
+            epoch_loss += cur_loss
+            if (math.isnan(cur_loss) or math.isnan(epoch_loss)):
+                print(cur_loss)
+                print(epoch_loss)
+
             for i in range(len(outputs)):
                 if outputs[i] > 0:
                     if batch_y[i] == 1:
@@ -119,7 +125,7 @@ class Trainer():
                     if batch_y[i] == 0:
                         accuracy += 1
 
-            if j % 2000 == 0:
+            if False:
                 end1 = time.time()
                 print("Batch ended after: ", str(end1 - start1))
 
