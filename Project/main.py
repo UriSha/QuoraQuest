@@ -22,19 +22,19 @@ def main():
                         default='simple')
     parser.add_argument('-lr', '--lr',
                         help="learning rate to use",
-                        default=0.001)
+                        default=0.001, type=float)
     parser.add_argument('-batch_size', '--batch_size',
                         help="size of batch",
-                        default=128)
+                        default=128, type=int)
     parser.add_argument('-epochs', '--epochs',
                         help="number of epochs",
-                        default=250)
+                        default=250, type=int)
     parser.add_argument('-test_ratio', '--test_ratio',
                         help="test/train ratio",
-                        default=0.1)
+                        default=0.1, type=float)
     parser.add_argument('-cuda', '--cuda',
                         help="use cuda",
-                        default=True)
+                        default=True, type=bool)
     args = parser.parse_args()
 
     # Consts
@@ -69,7 +69,7 @@ def main():
     criterion = nn.BCEWithLogitsLoss(reduce=True, size_average=False)
 
     print("Init Trainer")
-    trainer = Trainer(model, optimizer,learning_rate, criterion, epochs, batch_size, is_attn, cuda)
+    trainer = Trainer(model, optimizer, learning_rate, criterion, epochs, batch_size, is_attn, cuda)
 
     print("Start training with parameters:")
     print("batch_size: {} | epochs: {} | learning_rate: {} | train_ratio: {}".format(batch_size, epochs, learning_rate,
