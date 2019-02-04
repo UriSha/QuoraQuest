@@ -82,6 +82,9 @@ class Attn(nn.Module):
 
         masks = [self.masker(qlen, max_question_len) for qlen in questions_lens]
         masks = torch.stack(masks)
+
+        if self.to_cuda:
+            masks = masks.cuda()
         attn_energies.masked_fill_(masks, float('-inf'))
         
 
@@ -145,5 +148,9 @@ class Attn(nn.Module):
 
     def masker(self, qlen, max_question_len):
         if qlen == max_question_len:
+            if self.to_cuda:
+                return torch.zeros(max_question_len).byte().cuda()
             return torch.zeros(max_question_len).byte()
+        if self.to_cuda:
+            return torch.zeros(max_question_len).scatter_(0, torch.LongTensor(list(range(qlen, max_question_len))), 1.0).byte().cuda()    
         return torch.zeros(max_question_len).scatter_(0, torch.LongTensor(list(range(qlen, max_question_len))), 1.0).byte()
