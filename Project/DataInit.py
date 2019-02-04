@@ -27,7 +27,7 @@ class DataInit():
 
     def clean_data(self, data):
         data['question1'] = data['question1'].apply(lambda row: self.normalize_string(row))
-        data['question2'] = data['question1'].apply(lambda row: self.normalize_string(row))
+        data['question2'] = data['question2'].apply(lambda row: self.normalize_string(row))
         return data
 
     def normalize_string(self, s):

@@ -104,7 +104,7 @@ class AttnModel(nn.Module):
             try:
                 sent.append(self.w2idx[w])
             except KeyError:
-                sent.append(0)
+                sent.append(1)
 
         if self.to_cuda:
             return torch.cuda.LongTensor(np.array(sent))
