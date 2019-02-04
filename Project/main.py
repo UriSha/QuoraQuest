@@ -20,6 +20,9 @@ def main():
     parser.add_argument('-model', '--model',
                         help="which model to use",
                         default='simple')
+    parser.add_argument('-lr', '--lr',
+                        help="which model to use",
+                        default='0.001')
     args = parser.parse_args()
 
     # Consts
@@ -28,9 +31,13 @@ def main():
     emmbedings_file_path = args.emdpath
     batch_size = 128
     epochs = 250
-    learning_rate = 0.001
+    learning_rate = args.lr
     train_ratio = 0.1
     cuda = True
+    print("cuda: {}".format(cuda))
+    print("learning_rate: {}".format(learning_rate))
+    print("epochs: {}".format(epochs))
+    print("batch_size: {}".format(batch_size))
 
     print("Start DataInit")
     data_init = DataInit(data_file_path)
