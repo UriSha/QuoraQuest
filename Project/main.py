@@ -73,7 +73,7 @@ def main():
 
     print("Start training with parameters:")
     print("batch_size: {} | epochs: {} | learning_rate: {} | train_ratio: {}".format(batch_size, epochs, learning_rate,
-                                                                                     train_ratio))
+                                                                                     test_ratio))
     train_losses, test_losses = trainer.train(train_X, train_y, test_X, test_y)
 
     # plotter = Plotter(train_losses, test_losses)
