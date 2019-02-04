@@ -145,5 +145,5 @@ class Attn(nn.Module):
 
     def masker(self, qlen, max_question_len):
         if qlen == max_question_len:
-            return torch.zeros(max_question_len)
+            return torch.zeros(max_question_len).byte()
         return torch.zeros(max_question_len).scatter_(0, torch.LongTensor(list(range(qlen, max_question_len))), 1.0).byte()
