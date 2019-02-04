@@ -34,10 +34,6 @@ def main():
     learning_rate = args.lr
     train_ratio = 0.1
     cuda = True
-    print("cuda: {}".format(cuda))
-    print("learning_rate: {}".format(learning_rate))
-    print("epochs: {}".format(epochs))
-    print("batch_size: {}".format(batch_size))
 
     print("Start DataInit")
     data_init = DataInit(data_file_path)
