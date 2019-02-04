@@ -112,3 +112,4 @@ settings.json
 Project/Data/google.txt
 Project/Data/fasttext.vec
 Project/Results
+Project/.vscode/launch.json
