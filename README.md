@@ -10,7 +10,7 @@ In order to train a model from scrach you need to have the following:
 - pandas
 - skylearn
 
-In addition, you need fasttext word embeddings file. get it [here](https://fasttext.cc/docs/en/english-vectors.html).
+In addition, you need fasttext word embeddings file, get it [here](https://fasttext.cc/docs/en/english-vectors.html).
 - Download wiki-news-300d-1M.vec.zip
 - Unzip it and name the file fasttext.vec
 - locate fasttext.vec in Project/Data/
