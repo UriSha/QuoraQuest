@@ -1,6 +1,4 @@
-import random
 import torch
-import time
 import math
 import numpy as np
 
@@ -30,8 +28,6 @@ class Trainer():
             self.model.cuda()
 
         for e in range(self.epochs):
-            # train_X, train_y = self.shuffle_data(train_X, train_y)
-
             train_loss, train_acc = self.forward_batch(train_X, train_y, is_train=True)
             test_loss, test_acc = self.forward_batch(test_X, test_y, is_train=False)
 
@@ -66,11 +62,6 @@ class Trainer():
 
         for j in range(num_batches):
 
-            if False:
-                print()
-                start1 = time.time()
-                print("start batch num {} out of {}".format(j, num_batches))
-
             batch_X = X[x_idx:x_idx + self.batch_size * 2]
             batch_y = y[y_idx:y_idx + self.batch_size]
             x_idx += self.batch_size * 2
@@ -80,14 +71,7 @@ class Trainer():
                 self.optimizer.zero_grad()
 
             if self.is_attn:
-                if False:
-                    print()
-                    print("prepare batch before")
-                    start2 = time.time()
                 batch_X, lens = self.prepare_batch(batch_X)
-                if False:
-                    end2 = time.time()
-                    print("prepare batch after: ", str(end2 - start2))
                 outputs = self.model(batch_X, lens, False)
             else:
                 outputs = self.model(batch_X)
@@ -97,22 +81,14 @@ class Trainer():
             else:
                 batch_y = torch.Tensor(batch_y)
 
-            if False:
-                start3 = time.time()
+
             loss = self.criterion(outputs, batch_y)
 
-            if False:
-                end1 = time.time()
-                print("Criterion ended after: ", str(end1 - start3))
 
             if is_train:
-                if False:
-                    start3 = time.time()
+
                 loss.backward()
                 self.optimizer.step()
-                if False:
-                    end1 = time.time()
-                    print("loss ended after: ", str(end1 - start3))
 
             cur_loss = loss.item()
             epoch_loss += cur_loss
@@ -128,9 +104,6 @@ class Trainer():
                     if batch_y[i] == 0:
                         accuracy += 1
 
-            if False:
-                end1 = time.time()
-                print("Batch ended after: ", str(end1 - start1))
 
         # calculate loss for epoch
         epoch_loss /= (num_batches * self.batch_size)
@@ -140,14 +113,14 @@ class Trainer():
     def prepare_batch(self, batch_x):
         # get the length of each sentence  
         batch_lengths = [len(sentence) for sentence in batch_x]
-
         batch_x = [self.model.idx_vecs(sent) for sent in batch_x]
+
         # create an empty matrix with padding tokens
-        #   pad_token = vocab['<PAD>']
         pad_token = 0
         longest_sent = max(batch_lengths)
         batch_size = len(batch_x)
         padded_batch = np.ones((batch_size, longest_sent)) * pad_token
+
         # copy over the actual sequences
         for i, sent_len in enumerate(batch_lengths):
             sequence = batch_x[i]
@@ -159,9 +132,3 @@ class Trainer():
             batch = [torch.LongTensor(l) for l in padded_batch]
 
         return torch.stack(batch), batch_lengths
-
-        # def shuffle_data(self, X, y, seed=4):
-        #     c = list(zip(X, y))
-        #     random.Random(seed).shuffle(c)
-        #     X, y = zip(*c)
-        #     return X, y

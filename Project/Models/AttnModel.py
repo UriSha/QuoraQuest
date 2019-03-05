@@ -3,7 +3,6 @@ import torch
 import torch.nn as nn
 import time
 from torch.autograd import Variable
-
 from Models.Attn import Attn
 from Models.MasterClassifier import MasterClassifier
 
@@ -31,64 +30,21 @@ class AttnModel(nn.Module):
 
     def forward(self, X, lens, output_log=False):
 
-        if output_log:
-            print("torch stack")
-            start = time.time()
-
         if self.to_cuda:
             X = torch.stack([self.semb(Variable(sent).cuda()) for sent in X])
         else:
             X = torch.stack([self.semb(Variable(sent)) for sent in X])
 
-        if output_log:
-            end = time.time()
-            print("torch stack ended: ", str(end - start))
-
-        if output_log:
-            print("Start forward pass of attention model")
-            start = time.time()
         weights = self.attn(X, lens, output_log)
-
-        if output_log:
-            end = time.time()
-            print("Attention model forward pass ended after: ", str(end - start))
-        # print()
-        # print("in attn model after self.attn()")
-        # print("weights.shape", weights.shape)
-        # print("X.shape", X.shape)
-        # X = torch.stack(X)
-        #         print("X: ", X)
-        #         print("X.shape: ", X.shape)
-
-        #         print("weights: ", weights)
-        #         print("weights.shape: ", weights.shape)
-
-
-        # X = torch.dot(X, weights)
-        if output_log:
-            print("Start weight manipulations")
-            start = time.time()
 
         weights = weights.unsqueeze(2)
         weights = weights.expand(weights.shape[0], weights.shape[1], self.emb_size)
         weigthed_outputs = torch.mul(X, weights)
         X = torch.sum(weigthed_outputs, -2)
 
-        if output_log:
-            end = time.time()
-            print("Weight manipulation ended after: ", str(end - start))
-
-        if output_log:
-            print("Start master classifier")
-            start = time.time()
-
         X = self.concat_pairs(X)
         X = self.cls(X)
         X = X.squeeze(dim=1)
-
-        if output_log:
-            end = time.time()
-            print("Master classifier ended after: ", str(end - start))
 
         return X
 

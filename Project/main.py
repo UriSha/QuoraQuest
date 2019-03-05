@@ -5,7 +5,7 @@ from WordVecs import WordVecs
 from Models.SimpleModel import SimpleModel
 from Models.AttnModel import AttnModel
 from Trainer import Trainer
-# from Plotter import Plotter
+from Plotter import Plotter
 import argparse
 
 
@@ -76,8 +76,8 @@ def main():
                                                                                      test_ratio))
     train_losses, test_losses = trainer.train(train_X, train_y, test_X, test_y)
 
-    # plotter = Plotter(train_losses, test_losses)
-    # plotter.plot()
+    plotter = Plotter(train_losses, test_losses)
+    plotter.plot()
 
 
 if __name__ == '__main__':

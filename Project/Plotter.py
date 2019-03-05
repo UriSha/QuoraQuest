@@ -2,18 +2,23 @@ import matplotlib.pyplot as plt
 
 
 class Plotter:
-    def __init__(self, train_losses, test_losses):
-        self.train_losses = train_losses
-        self.test_losses = test_losses
+    def __init__(self, first_losses, fist_label, sec_losses, sec_label):
+        self.first_losses = first_losses
+        self.fist_label = fist_label
+        self.sec_losses = sec_losses
+        self.sec_label = sec_label
 
-    def plot(self):
+    def plot(self, file_name):
         """Plot the loss per epoch"""
 
-        plt.plot(range(len(self.train_losses)), self.train_losses, label='train loss')
-        plt.plot(range(len(self.test_losses)), self.test_losses, label='test loss')
+        line1, = plt.plot(range(len(self.first_losses)), self.first_losses, label=self.fist_label)
 
+        line2, = plt.plot(range(len(self.sec_losses)), self.sec_losses, label=self.sec_label)
+        plt.legend(handles=[line1,line2])
         plt.xlabel('epoch')
+        # plt.ylabel('accuracy')
+        # plt.title('Accuracy per epoch')
         plt.ylabel('loss')
-        plt.title('Cross Entropy Loss')
+        plt.title('Cross entropy loss')
         plt.grid(True)
-        plt.show()
+        plt.savefig(file_name)
