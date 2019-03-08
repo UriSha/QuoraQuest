@@ -20,7 +20,7 @@ In addition, you need fasttext word embeddings file, get it [here](https://fastt
 $ python3.6 main.py --model simple --lr 0.0001 --batch_size 128 -- epochs 250 --test_ratio 0.1 --cuda True
 ```
 
-### Training the simple model
+### Training the attention model
 ```shell
 $ python3.6 main.py --model attn --lr 0.0001 --batch_size 128 -- epochs 250 --test_ratio 0.1 --cuda True
 ```
